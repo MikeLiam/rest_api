@@ -115,29 +115,21 @@ router.get('/courses/:id', asyncHandler(async (req, res) => {
 
 // create new course
 router.post('/courses', asyncHandler(async (req, res) => {
-    // if (req.body.title && req.body.description && req.body.userId) {
-        try {
-            const course = await Course.create(req.body)
-                .then(course => res.location(`/api/courses/${course.id}`))
-                //.catch(err => console.log("Error inserting course".bgRed, err))
 
-            res.status(201).end()
-        } catch (error) {
-            throw error; // error caught in the asyncHandler's catch block
-        }
-    // } else {
-    //     const error = new Error('Title, description and userId required')
-    //     error.status = 400
-    //     throw error
-    // }
+    const course = await Course.create(req.body)
+        .then(course => res.location(`/api/courses/${course.id}`))
+        //.catch(err => console.log("Error inserting course".bgRed, err))
+
+    res.status(201).end()
+
 }));
 
 // Update course :id
 router.put('/courses/:id', asyncHandler(async (req, res) => {
-    const course = await Course.findByPk(req.params.id);
+    let course = await Course.findByPk(req.params.id);
     if (course) {
         // update databse
-        await course.update(req.body);
+        course = await Course.update(req.body, {where: {id: req.params.id}, runValidators: true});
         res.status(204).end()
     } else {
         res.status(404).json({

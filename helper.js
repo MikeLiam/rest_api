@@ -61,12 +61,13 @@ const authenticateUser = async (req, res, next) => {
         // Attempt to retrieve the user from the data store
         // by their username (i.e. the user's "key"
         // from the Authorization header).
-        const users = await User.findAll({
+        
+        const users = await User.findOne({
             where: {
                 emailAddress: credentials.name
             }
         })
-        const user = users[0].dataValues
+        const user = users.dataValues
         console.log("getting user: ".bgYellow, user)
         // If a user was successfully retrieved from the data store...
         if (user) {

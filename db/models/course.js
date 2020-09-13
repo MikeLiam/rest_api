@@ -35,7 +35,29 @@ module.exports = (sequelize) => {
       type: Sequelize.STRING,
       allowNull: true,
     },
-  }, { sequelize });
+  }, { 
+    hooks: {
+      beforeValidate: async (course, options) => {
+        const error = new Error;
+        let errors = [];
+
+        error.name = "SequelizeValidationError"
+        if (!course.dataValues.title) {
+          errors.push({message: '"Title" is required'})
+          
+        }
+        if (!course.dataValues.description) {
+          errors.push({message: '"Description" is required'})
+        }
+        if (errors.length > 0) {
+          console.warn(errors);
+          error.errors = errors;
+          throw error
+        }
+      }
+    },
+    sequelize });
+
 
   Course.associate = (models) => {
     // Add associations.

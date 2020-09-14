@@ -20,6 +20,16 @@ module.exports = (sequelize) => {
     emailAddress: {
       type: Sequelize.STRING,
       allowNull: false,
+      unique: {
+        args: [[true]],
+        msg: 'User with this emailAddress already exists'
+      },
+      validate: {
+        isEmail: { 
+          args: [[true]],
+          msg: 'emailAddress invalid'
+        }
+      }
     },
     password: {
       type: Sequelize.STRING,

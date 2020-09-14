@@ -40,7 +40,7 @@ router.get('/users', authenticateUser, (req, res) => {
 });
 
 // Route that creates a new user.
-router.post('/users', fieldsValidator, async (req, res) => {
+router.post('/users', fieldsValidator, asyncHandler( async (req, res) => {
     // Attempt to get the validation result from the Request object.
     const errors = validationResult(req);
 
@@ -66,17 +66,17 @@ router.post('/users', fieldsValidator, async (req, res) => {
             res.location(`/api/`)
             res.status(201).end()
         })
-        .catch(err => {
-            console.log("Error inserting user".bgRed, err)
-            res.status(400).json({
-                message: {
-                    ...err.errors.forEach(error => error.message)
-                }
-            })
-        })
+        // .catch(err => {
+        //     console.log("Error inserting user".bgRed, err)
+        //     res.status(400).json({
+        //         message: {
+        //             ...err.errors.forEach(error => error.message)
+        //         }
+        //     })
+        // })
 
 
-});
+}));
 
 // get all courses
 router.get('/courses', asyncHandler(async (req, res) => {

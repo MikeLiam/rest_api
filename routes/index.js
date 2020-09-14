@@ -26,15 +26,15 @@ const {
     Course
 } = models;
 // Colorized messages
-const colors = require('colors')
+const colors = require('colors');
+const helper = require('../helper');
 
 // *Auth Route that returns the current authenticated user.
 router.get('/users', authenticateUser, (req, res) => {
-    const user = req.currentUser;
+    const user = req.currentUser
 
     res.json({
-        emailAddress: user.emailAddress,
-        name: user.firstName,
+        user
     });
 
 });
@@ -68,22 +68,22 @@ router.post('/users', fieldsValidator, async (req, res) => {
         })
         .catch(err => {
             console.log("Error inserting user".bgRed, err)
-            res.status(400).json({message: {...err.errors.forEach(error => error.message)}})
+            res.status(400).json({
+                message: {
+                    ...err.errors.forEach(error => error.message)
+                }
+            })
         })
 
-    
+
 });
 
 // get all courses
 router.get('/courses', asyncHandler(async (req, res) => {
 
-    const courses = await Course.findAll({
-        include: [{
-            model: User,
-            as: 'createdBy',
-        }, ]
-    });
+    const courses = await Course.findAll(helper.optionsFilterCourse);
     if (courses) {
+
         res.json(courses)
     } else {
         res.status(404).json({
@@ -96,12 +96,7 @@ router.get('/courses', asyncHandler(async (req, res) => {
 // get :id course
 router.get('/courses/:id', asyncHandler(async (req, res) => {
 
-    const course = await Course.findByPk(req.params.id, {
-        include: [{
-            model: User,
-            as: 'createdBy',
-        }, ]
-    });
+    const course = await Course.findByPk(req.params.id, helper.optionsFilterCourse);
 
     if (course) {
         res.json(course)
@@ -118,7 +113,7 @@ router.post('/courses', authenticateUser, asyncHandler(async (req, res) => {
 
     const course = await Course.create(req.body)
         .then(course => res.location(`/api/courses/${course.id}`))
-        //.catch(err => console.log("Error inserting course".bgRed, err))
+    //.catch(err => console.log("Error inserting course".bgRed, err))
 
     res.status(201).end()
 
@@ -126,19 +121,30 @@ router.post('/courses', authenticateUser, asyncHandler(async (req, res) => {
 
 // *Auth Update course :id
 router.put('/courses/:id', authenticateUser, asyncHandler(async (req, res) => {
-     const course = await Course.findByPk(req.params.id);
+    const course = await Course.findByPk(req.params.id);
     if (course) {
-        const updated = await Course.update(req.body, { where: {id: req.params.id}, individualHooks: true})
-            .then( updated => {
-                // The promise returns an array with one or two elements. 
-                // The first element is always the number of affected rows,
-                return updated[0] !== 0
-            })
-        if (updated) {
-            res.status(204).end()
+        if (course.userId === req.currentUser.id) {
+            const updated = await Course.update(req.body, {
+                    where: {
+                        id: req.params.id
+                    },
+                    individualHooks: true
+                })
+                .then(updated => {
+                    // The promise returns an array with one or two elements. 
+                    // The first element is always the number of affected rows,
+                    return updated[0] !== 0
+                })
+            if (updated) {
+                res.status(204).end()
+            } else {
+                res.status(404).json({
+                    message: "No fields updated. Same previous values?"
+                })
+            }
         } else {
-            res.status(404).json({
-                message: "No fields updated. Same previous values?"
+            res.status(403).json({
+                message: "Current user doesn't own the requested course"
             })
         }
     } else {
@@ -152,9 +158,15 @@ router.put('/courses/:id', authenticateUser, asyncHandler(async (req, res) => {
 router.delete('/courses/:id', authenticateUser, asyncHandler(async (req, res, next) => {
     const course = await Course.findByPk(req.params.id);
     if (course) {
-        await course.destroy()
+        if (course.userId === req.currentUser.id) {
+            await course.destroy()
 
-        res.status(204).end()
+            res.status(204).end()
+        } else {
+            res.status(403).json({
+                message: "Current user doesn't own the requested course"
+            })
+        }
     } else {
         res.status(404).json({
             message: "Course Not Found"

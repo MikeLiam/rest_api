@@ -52,6 +52,24 @@ function asyncHandler(cb) {
 }
 
 const authenticateUser = async (req, res, next) => {
+    /**
+     * Destructuring assignment to filter properties from a given user
+     * @param {Object} user 
+     */
+    function filterUser(user) {
+        return (({
+            id,
+            emailAddress,
+            firstName,
+            lastName
+        }) => ({
+            id,
+            emailAddress,
+            firstName,
+            lastName
+        }))(user)
+    }
+
     let message = null;
 
     // Parse the user's credentials from the Authorization header.
@@ -61,27 +79,27 @@ const authenticateUser = async (req, res, next) => {
         // Attempt to retrieve the user from the data store
         // by their username (i.e. the user's "key"
         // from the Authorization header).
-        
+
         const users = await User.findOne({
             where: {
                 emailAddress: credentials.name
             }
         })
         const user = users.dataValues
-        console.log("getting user: ".bgYellow, user)
         // If a user was successfully retrieved from the data store...
         if (user) {
             // Use the bcryptjs npm package to compare the user's password
             // (from the Authorization header) to the user's password
             // that was retrieved from the data store.
             const authenticated = bcryptjs
-                .compareSync(credentials.pass, user.password)
+            .compareSync(credentials.pass, user.password)
             // If the passwords match...
             if (authenticated) {
                 // Then store the retrieved user object on the request object
                 // so any middleware functions that follow this middleware function
                 // will have access to the user's information.
-                req.currentUser = user
+                req.currentUser = filterUser(user)
+                console.log("getting user: ".bgYellow, req.currentUser)
             } else {
                 message = `Authentication failure for username: ${user.emailAddress}`;
             }
@@ -107,8 +125,23 @@ const authenticateUser = async (req, res, next) => {
 
 };
 
+// Object with options to filter course properties to retrieve from database
+const optionsFilterCourse = {
+    attributes: {
+        exclude: ['createdAt', 'updatedAt']
+    },
+    include: [{
+        model: User,
+        as: 'createdBy',
+        attributes: {
+            exclude: ['password', 'createdAt', 'updatedAt']
+        }
+    }, ]
+}
+
 module.exports = {
     fieldsValidator,
     asyncHandler,
-    authenticateUser
+    authenticateUser,
+    optionsFilterCourse
 }

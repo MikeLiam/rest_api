@@ -1,7 +1,7 @@
 const auth = require('basic-auth')
 const bcryptjs = require('bcryptjs')
 
-// Get references to our models.
+// Get references to our user model.
 const {
     models
 } = require('./db');
@@ -9,11 +9,12 @@ const {
     User,
 } = models;
 
+// Validation
 const {
     check,
-    validationResult
 } = require('express-validator')
 
+// express-validator validation for user fields. extra: valid email format
 const userFieldsValidator = [
     check('firstName')
     .exists({
@@ -45,6 +46,10 @@ const userFieldsValidator = [
     .withMessage('Please provide a value for "password"'),
 ]
 
+/**
+ * Handler function to wrap each route.
+ * @param {Function} cb 
+ */
 function asyncHandler(cb) {
     return async (req, res, next) => {
         try {
@@ -55,6 +60,9 @@ function asyncHandler(cb) {
     };
 }
 
+/**
+ * Middleware to authenticate user through email/password
+ */
 const authenticateUser = async (req, res, next) => {
     /**
      * Destructuring assignment to filter properties from a given user
@@ -78,30 +86,23 @@ const authenticateUser = async (req, res, next) => {
 
     // Parse the user's credentials from the Authorization header.
     const credentials = auth(req)
-    // If the user's credentials are available...
+    // If the user's credentials are available
     if (credentials) {
         // Attempt to retrieve the user from the data store
-        // by their username (i.e. the user's "key"
-        // from the Authorization header).
-
         const users = await User.findOne({
             where: {
                 emailAddress: credentials.name
             }
         })
         const user = users.dataValues
-        // If a user was successfully retrieved from the data store...
+        // If a user was successfully retrieved
         if (user) {
-            // Use the bcryptjs npm package to compare the user's password
-            // (from the Authorization header) to the user's password
-            // that was retrieved from the data store.
+            // compare the user's password (from header) to the user's (from retrieved)
             const authenticated = bcryptjs
             .compareSync(credentials.pass, user.password)
-            // If the passwords match...
+            // If the passwords match
             if (authenticated) {
-                // Then store the retrieved user object on the request object
-                // so any middleware functions that follow this middleware function
-                // will have access to the user's information.
+                // Then store the retrieved user object (properties filtered) on the request object
                 req.currentUser = filterUser(user)
                 console.log("getting user: ".bgYellow, req.currentUser)
             } else {
@@ -113,7 +114,7 @@ const authenticateUser = async (req, res, next) => {
     } else {
         message = 'Auth header not found';
     }
-    // If user authentication failed...
+    // If user authentication failed
     if (message) {
         console.warn(message);
 
@@ -122,8 +123,7 @@ const authenticateUser = async (req, res, next) => {
             message: 'Access Denied'
         });
     } else {
-        // Or if user authentication succeeded...
-        // Call the next() method.
+        // authentication succeeded
         next();
     }
 

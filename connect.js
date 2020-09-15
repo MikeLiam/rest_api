@@ -1,3 +1,4 @@
+// Colored console messages
 const colors = require('colors')
 
 const { sequelize, models } = require('./db');
@@ -18,7 +19,7 @@ console.log('Testing the connection to the database...'.bgWhite.green);
 
     // Sync the models
     await sequelize.sync({ force: false });
-    console.log('Synchronizing the models with the database...'.bgWhite.green);
+    console.log('Models synchronized with the database!'.bgWhite.green);
     
   } catch (error) {
       throw error;

@@ -12,20 +12,10 @@ module.exports = (sequelize) => {
     title: {
       type: Sequelize.STRING,
       allowNull: false,
-        validate: {
-          notEmpty: {
-            msg: 'Title is required'
-          }
-        }
     },
     description: {
       type: Sequelize.TEXT,
       allowNull: false,
-        validate: {
-          notEmpty: {
-            msg: 'Description is required'
-          }
-        }
     },
     estimatedTime: {
       type: Sequelize.STRING,
@@ -37,6 +27,7 @@ module.exports = (sequelize) => {
     },
   }, { 
     hooks: {
+      // validation method to use not only on create but on update too
       beforeValidate: async (course, options) => {
         const error = new Error;
         let errors = [];
@@ -50,7 +41,6 @@ module.exports = (sequelize) => {
           errors.push({message: '"Description" is required'})
         }
         if (errors.length > 0) {
-          console.warn(errors);
           error.errors = errors;
           throw error
         }

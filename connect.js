@@ -1,5 +1,5 @@
 const colors = require('colors')
-// -----------------------------------------------------------------------
+
 const { sequelize, models } = require('./db');
 
 // Get references to our models.
@@ -10,7 +10,10 @@ console.log('Testing the connection to the database...'.bgWhite.green);
 (async () => {
   try {
     // Test the connection to the database
-    await sequelize.authenticate();
+    await sequelize.authenticate().catch(err => {
+      console.log('Error connecting database');
+      throw err
+    });
     console.log('Connection to the database successful!'.bgWhite.green);
 
     // Sync the models
@@ -21,4 +24,3 @@ console.log('Testing the connection to the database...'.bgWhite.green);
       throw error;
   }
 })();
-// -----------------------------------------------------------------------

@@ -14,7 +14,7 @@ const {
     validationResult
 } = require('express-validator')
 
-const fieldsValidator = [
+const userFieldsValidator = [
     check('firstName')
     .exists({
         checkNull: true,
@@ -32,7 +32,11 @@ const fieldsValidator = [
         checkNull: true,
         checkFalsy: true
     })
-    .withMessage('Please provide a value for "emailAddress"'),
+    .withMessage('Please provide a value for "emailAddress"')
+    .if(check('emailAddress').notEmpty())
+    .normalizeEmail()
+    .isEmail()
+    .withMessage('Invalid emailAddress'),
     check('password')
     .exists({
         checkNull: true,
@@ -140,7 +144,7 @@ const optionsFilterCourse = {
 }
 
 module.exports = {
-    fieldsValidator,
+    userFieldsValidator,
     asyncHandler,
     authenticateUser,
     optionsFilterCourse

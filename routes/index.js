@@ -2,9 +2,10 @@ const express = require('express')
 const router = express.Router()
 // Helpers
 const {
-    fieldsValidator,
+    userFieldsValidator,
     asyncHandler,
-    authenticateUser
+    authenticateUser,
+    optionsFilterCourse
 } = require('../helper');
 // Sequelize operators
 const {
@@ -40,7 +41,7 @@ router.get('/users', authenticateUser, (req, res) => {
 });
 
 // Route that creates a new user.
-router.post('/users', fieldsValidator, asyncHandler( async (req, res) => {
+router.post('/users', userFieldsValidator, asyncHandler( async (req, res) => {
     // Attempt to get the validation result from the Request object.
     const errors = validationResult(req);
 
@@ -63,17 +64,9 @@ router.post('/users', fieldsValidator, asyncHandler( async (req, res) => {
 
     await User.create(user)
         .then(user => {
-            res.location(`/api/`)
+            res.location(`/`)
             res.status(201).end()
         })
-        // .catch(err => {
-        //     console.log("Error inserting user".bgRed, err)
-        //     res.status(400).json({
-        //         message: {
-        //             ...err.errors.forEach(error => error.message)
-        //         }
-        //     })
-        // })
 
 
 }));
@@ -82,8 +75,8 @@ router.post('/users', fieldsValidator, asyncHandler( async (req, res) => {
 router.get('/courses', asyncHandler(async (req, res) => {
 
     const courses = await Course.findAll(helper.optionsFilterCourse);
+    
     if (courses) {
-
         res.json(courses)
     } else {
         res.status(404).json({
@@ -113,7 +106,6 @@ router.post('/courses', authenticateUser, asyncHandler(async (req, res) => {
 
     const course = await Course.create(req.body)
         .then(course => res.location(`/api/courses/${course.id}`))
-    //.catch(err => console.log("Error inserting course".bgRed, err))
 
     res.status(201).end()
 

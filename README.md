@@ -13,6 +13,8 @@ Created with [**node.js**](https://github.com/nodejs), [**express**](https://git
 ![Get Course](https://res.cloudinary.com/da3z5stec/image/upload/v1600205418/REST%20API/Get_course_1_hsrtmi.png)
 - Non authenticated route to post/create new user. Returning location header to root.
 ![Post user](https://res.cloudinary.com/da3z5stec/image/upload/v1600205418/REST%20API/Post_user_e9vigp.png)
+- Authenticated route to get user info (no password)
+![Get user](https://res.cloudinary.com/da3z5stec/image/upload/v1600243800/REST%20API/Get_user_ytn8i5.png)
 - Authenticated route to post/create new course. Returning location header with course uri.
 ![Post Course](https://res.cloudinary.com/da3z5stec/image/upload/v1600205418/REST%20API/Post_course_utczrt.png)
 - Authenticated route to put/update a course with specific id

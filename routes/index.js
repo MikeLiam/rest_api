@@ -15,13 +15,8 @@ const {
 } = require('express-validator')
 
 // Get references to our models.
-const {
-    models
-} = require('../db');
-const {
-    User,
-    Course
-} = models;
+const User = require('../models').User;
+const Course = require('../models').Course;
 
 // *Authenticated Route that returns the current authenticated user.
 router.get('/users', authenticateUser, (req, res) => {

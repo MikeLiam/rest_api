@@ -1,10 +1,11 @@
 // Colored console messages
 const colors = require('colors')
 
-const { sequelize, models } = require('./db');
 
 // Get references to our models.
-const { User, Course } = models;
+const sequelize = require('./models').sequelize;
+const User = require('./models').User;
+const Course = require('./models').Course;
 
 console.log('Testing the connection to the database...'.bgWhite.green);
 

@@ -2,12 +2,7 @@ const auth = require('basic-auth')
 const bcryptjs = require('bcryptjs')
 
 // Get references to our user model.
-const {
-    models
-} = require('./db');
-const {
-    User,
-} = models;
+const User = require('./models').User;
 
 // Validation
 const {

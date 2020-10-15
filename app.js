@@ -10,7 +10,7 @@ const sequelizeHelper = require( './connect.js')
 const enableGlobalErrorLogging = process.env.ENABLE_GLOBAL_ERROR_LOGGING === 'true';
 
 // create the Express app
-const app = express();
+var app = express();
 
 // setup morgan which gives us http request logging
 app.use(morgan('dev'));
@@ -49,10 +49,11 @@ app.use((err, req, res, next) => {
   });
 });
 
-// set port
-app.set('port', process.env.PORT || 5000);
+// // set port
+// app.set('port', process.env.PORT || 5000);
 
-// start listening on port
-const server = app.listen(app.get('port'), () => {
-  console.log(`Express server is listening on port ${server.address().port}`);
-});
+// // start listening on port
+// const server = app.listen(app.get('port'), () => {
+//   console.log(`Express server is listening on port ${server.address().port}`);
+// });
+module.exports = app;

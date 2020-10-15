@@ -3,6 +3,7 @@
 const express = require('express');
 const morgan = require('morgan'); 
 const routes = require('./routes')
+var cors = require('cors')
 // Connect and sinc database
 const sequelizeHelper = require( './connect.js')
 
@@ -12,6 +13,10 @@ const enableGlobalErrorLogging = process.env.ENABLE_GLOBAL_ERROR_LOGGING === 'tr
 // create the Express app
 var app = express();
 
+// Enable ALL CORS Requests
+app.use(cors({
+  exposedHeaders:['Location'],
+}))
 // setup morgan which gives us http request logging
 app.use(morgan('dev'));
 // request json

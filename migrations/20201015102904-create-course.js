@@ -70,7 +70,7 @@ module.exports = {
   },
 
   down: async (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('courses');
+    return queryInterface.dropTable('Courses');
     return queryInterface.removeColumn(
       'courses',
       'UserId'

@@ -28,7 +28,20 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
-    })
+    });
+    return queryInterface.addColumn(
+      'Users',
+      'UserId',
+      {
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'Courses',
+          key: 'UserId'
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'SET NULL',
+      }
+    );
   },
 
   down: async (queryInterface, Sequelize) => {

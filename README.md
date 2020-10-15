@@ -7,6 +7,10 @@
 
 Created with [**node.js**](https://github.com/nodejs), [**express**](https://github.com/expressjs) and SQL ORM [***Sequelize***](https://github.com/sequelize/sequelize) using middleware for error handlling, authentication and field validations, routes and SQLite database:
 
+This REST API has been modificated adding migrations, seeders and config to deploy and stay live on Heroku with Postgres DataBase.
+![Get Courses](https://res.cloudinary.com/da3z5stec/image/upload/v1602777484/REST%20API/Deployed_rkianl.png)
+
+
 - Non authenticated route to get a list of all courses with respective user owner
 ![Get Courses](https://res.cloudinary.com/da3z5stec/image/upload/v1600205418/REST%20API/Get_courses_nddm6z.png)
 - Non authenticated route to get a course with specific id

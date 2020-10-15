@@ -2,7 +2,7 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('Users', {
+    return queryInterface.createTable('users', {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
@@ -29,22 +29,9 @@ module.exports = {
         allowNull: false,
       },
     });
-    // return queryInterface.addColumn(
-    //   'Users',
-    //   'ProjectId',
-    //   {
-    //     type: Sequelize.INTEGER,
-    //     references: {
-    //       model: 'Courses',
-    //       key: 'id'
-    //     },
-    //     onUpdate: 'CASCADE',
-    //     onDelete: 'SET NULL',
-    //   }
-    // );
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('Users');
+    return queryInterface.dropTable('users');
   }
 };

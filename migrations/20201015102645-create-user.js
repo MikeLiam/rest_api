@@ -29,19 +29,19 @@ module.exports = {
         allowNull: false,
       },
     });
-    return queryInterface.addColumn(
-      'Users',
-      'UserId',
-      {
-        type: Sequelize.INTEGER,
-        references: {
-          model: 'Courses',
-          key: 'UserId'
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'SET NULL',
-      }
-    );
+    // return queryInterface.addColumn(
+    //   'Users',
+    //   'ProjectId',
+    //   {
+    //     type: Sequelize.INTEGER,
+    //     references: {
+    //       model: 'Courses',
+    //       key: 'id'
+    //     },
+    //     onUpdate: 'CASCADE',
+    //     onDelete: 'SET NULL',
+    //   }
+    // );
   },
 
   down: async (queryInterface, Sequelize) => {
